@@ -10,7 +10,6 @@ Fully Observable, Deterministic, Sequential, Static, Discrete, Multi-Agent Envir
 """
 
 
-
 from env import play
 from search.a_star import a_star
 from search.bfs import bfs
