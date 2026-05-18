@@ -13,9 +13,9 @@ Fully Observable, Deterministic, Sequential, Static, Discrete, Multi-Agent Envir
 from env import play
 from search.a_star import a_star
 from search.bfs import bfs
-# from search.dls import dls
-# from search.ucs import ucs
+from search.dls import dls
+from search.ucs import ucs
 
 
 if __name__ == "__main__":
-    play("easy-no-weapon", bfs, delay=200)
+    play("easy-no-weapon", dls, delay=200)
