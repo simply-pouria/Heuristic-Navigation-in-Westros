@@ -37,5 +37,24 @@ def a_star(initial_state):
                 h += nearby * 5  
 
         return h
+    arya=ManOfTheNightsWatch(toward_walls=False, avoid_collision=False)
+    pq=[]
+    
 
+
+    while pq :
+        f, _,g,current_state, path = heapq.heappop(pq)
+        key= arya.state_key(current_state)
+        if g >visited.get(key, float('inf')):
+            continue
+
+        if arya.is_goal(current_state):
+            return path
+        for action, cost, next_state in arya.next_states(current_state):
+           if next_state.is_collision_state():
+                continue
+
+            next_key = arya.state_key(next_state)
+            new_g = g + cost
+             
 
