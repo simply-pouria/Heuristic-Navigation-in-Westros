@@ -30,12 +30,11 @@ def a_star(initial_state):
         if state.is_enemy_alive() and not state.has_weapon():
             enemy_pos = state.get_enemy_position()
             if enemy_pos:
-                # Count targets within Manhattan radius 2 of enemy
                 nearby = sum(
                     1 for t in targets
                     if abs(t[0] - enemy_pos[0]) + abs(t[1] - enemy_pos[1]) <= 2
                 )
-                h += nearby * 5  # tiny, does not break admissibility for most maps
+                h += nearby * 5  
 
         return h
 
