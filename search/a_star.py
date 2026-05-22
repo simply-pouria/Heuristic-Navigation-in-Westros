@@ -3,13 +3,13 @@ from search.infrastructure import ManOfTheNightsWatch
 
 def a_star(initial_state):
     def heuristic(state):
-        agent = state.get_agent_position()
-        targets = list(state.get_targets_positions())
+        agent= state.get_agent_position()
+        targets= list(state.get_targets_positions())
 
         if not targets:
             return 0
         MIN_STEP = 5
-        remaining = set(range(len(targets)))
+        remaining= set(range(len(targets)))
         current = agent
         h = 0
         while remaining:
@@ -28,7 +28,7 @@ def a_star(initial_state):
             current = targets[nearest_idx]
             remaining.remove(nearest_idx)
         if state.is_enemy_alive() and not state.has_weapon():
-            enemy_pos = state.get_enemy_position()
+            enemy_pos= state.get_enemy_position()
             if enemy_pos:
                 nearby = sum(
                     1 for t in targets
@@ -39,8 +39,8 @@ def a_star(initial_state):
         return h
     arya=ManOfTheNightsWatch(toward_walls=False, avoid_collision=False)
     pq=[]
-    counter = 0
-    start_h = heuristic(initial_state)
+    counter= 0
+    start_h= heuristic(initial_state)
     heapq.heappush(pq, (start_h, counter, 0.0, initial_state, []))
 
 
@@ -56,7 +56,15 @@ def a_star(initial_state):
            if next_state.is_collision_state():
                 continue
 
-            next_key = arya.state_key(next_state)
-            new_g = g + cost
+            next_key= arya.state_key(next_state)
+            new_g= g + cost
+            if new_g < visited.get(next_key, float('inf')):
+                visited[next_key]=new_g
+                h =heuristic(next_state)
+                new_f =new_g + h
+                counter += 1
+                heapq.heappush(pq, (new_f, counter, new_g, next_state, path + [action]))
+
+    return []
              
 
