@@ -39,7 +39,9 @@ def a_star(initial_state):
         return h
     arya=ManOfTheNightsWatch(toward_walls=False, avoid_collision=False)
     pq=[]
-    
+    counter = 0
+    start_h = heuristic(initial_state)
+    heapq.heappush(pq, (start_h, counter, 0.0, initial_state, []))
 
 
     while pq :
