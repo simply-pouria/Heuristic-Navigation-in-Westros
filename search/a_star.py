@@ -2,6 +2,32 @@ import heapq
 from search.infrastructure import ManOfTheNightsWatch
 
 def a_star(initial_state):
+    MIN_STEP_COST = 5
+    ICE_STEP_COST = 100
+    ICE_BONUS     = 95
+    KILL_REWARD   = 500
+
+    def _manhattan(a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+    def _nearest_neighbour_chain(agent, targets):
+        remaining = list(targets)
+        current   = agent
+        h         = 0
+
+        while remaining:
+            nearest_idx = min(
+                range(len(remaining)),
+                key=lambda i: _manhattan(current, remaining[i])
+            )
+            h += _manhattan(current, remaining[nearest_idx]) * MIN_STEP_COST
+            current = remaining[nearest_idx]
+            remaining.pop(nearest_idx)
+
+        return h
+
+
+
+
     def heuristic(state):
         agent= state.get_agent_position()
         targets= list(state.get_targets_positions())
