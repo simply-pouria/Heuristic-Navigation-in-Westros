@@ -24,8 +24,30 @@ def a_star(initial_state):
             remaining.pop(nearest_idx)
 
         return h
+    def _ice_penalty(targets):
+        penalty = 0
+        for t in targets:
+            r, c = t
+            if initial_state._original_grid[r, c] == 'B':
+                penalty += ICE_BONUS  # = ICE_STEP_COST(100) - MIN_STEP_COST(5)
+        return penalty
 
+    def _weapon_adjustment(state, targets):
+        if not state.is_enemy_alive():
+            return 0  
 
+        weapon_pos = state.get_weapon_position()
+        if weapon_pos is None or state.has_weapon():
+            return 0  
+
+        cost_to_weapon = _manhattan(state.get_agent_position(), weapon_pos) * MIN_STEP_COST
+
+        if cost_to_weapon < KILL_REWARD:
+            net_saving = KILL_REWARD - cost_to_weapon
+            return -(net_saving // 4)
+
+        return 0
+        
 
 
     def heuristic(state):
