@@ -34,11 +34,11 @@ def a_star(initial_state):
 
     def _weapon_adjustment(state, targets):
         if not state.is_enemy_alive():
-            return 0  
+            return 0  # enemy dead, no adjustment
 
         weapon_pos = state.get_weapon_position()
         if weapon_pos is None or state.has_weapon():
-            return 0  
+            return 0  # no weapon on map, or collected
 
         cost_to_weapon = _manhattan(state.get_agent_position(), weapon_pos) * MIN_STEP_COST
 
@@ -56,45 +56,55 @@ def a_star(initial_state):
 
         if not targets:
             return 0
-        MIN_STEP = 5
-        remaining= set(range(len(targets)))
-        current = agent
-        h = 0
-        while remaining:
-            nearest_idx = min(
-                remaining,
-                key=lambda i: (
-                    abs(targets[i][0] - current[0])
-                    + abs(targets[i][1] - current[1])
-                )
-            )
-            dist = (
-                abs(targets[nearest_idx][0] - current[0])
-                + abs(targets[nearest_idx][1] - current[1])
-            )
-            h += dist * MIN_STEP
-            current = targets[nearest_idx]
-            remaining.remove(nearest_idx)
-        if state.is_enemy_alive() and not state.has_weapon():
-            enemy_pos= state.get_enemy_position()
-            if enemy_pos:
-                nearby = sum(
-                    1 for t in targets
-                    if abs(t[0] - enemy_pos[0]) + abs(t[1] - enemy_pos[1]) <= 2
-                )
-                h += nearby * 5  
 
-        return h
+        h = _nearest_neighbour_chain(agent, targets)
+        h += _ice_penalty(targets)
+        h += _weapon_adjustment(state, targets)
+        
+        return max(h, 0)  # h must never be negative
+
+        # MIN_STEP = 5
+        # remaining= set(range(len(targets)))
+        # current = agent
+        # h = 0
+        # while remaining:
+        #     nearest_idx = min(
+        #         remaining,
+        #         key=lambda i: (
+        #             abs(targets[i][0] - current[0])
+        #             + abs(targets[i][1] - current[1])
+        #         )
+        #     )
+        #     dist = (
+        #         abs(targets[nearest_idx][0] - current[0])
+        #         + abs(targets[nearest_idx][1] - current[1])
+        #     )
+        #     h += dist * MIN_STEP
+        #     current = targets[nearest_idx]
+        #     remaining.remove(nearest_idx)
+        # if state.is_enemy_alive() and not state.has_weapon():
+        #     enemy_pos= state.get_enemy_position()
+        #     if enemy_pos:
+        #         nearby = sum(
+        #             1 for t in targets
+        #             if abs(t[0] - enemy_pos[0]) + abs(t[1] - enemy_pos[1]) <= 2
+        #         )
+        #         h += nearby * 5  
+
+        # return h
     arya=ManOfTheNightsWatch(toward_walls=False, avoid_collision=False)
     pq=[]
     counter= 0
     start_h= heuristic(initial_state)
     heapq.heappush(pq, (start_h, counter, 0.0, initial_state, []))
-
+    visited = {}
+    visited[arya.state_key(initial_state)] = 0.0
 
     while pq :
         f, _,g,current_state, path = heapq.heappop(pq)
         key= arya.state_key(current_state)
+
+        
         if g >visited.get(key, float('inf')):
             continue
 
