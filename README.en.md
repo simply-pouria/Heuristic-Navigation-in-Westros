@@ -1,7 +1,5 @@
 **Language:** [فارسی](README.md) | English (AI-Translated)
 
-tags: [[Uni AI Course]]
-
 ## Heuristic Navigation in Westeros
 
 # 1. Shared Infrastructure in `infrastructure.py`
